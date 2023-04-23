@@ -12,17 +12,26 @@ import {
 } from "../utilFunctions/utils.js";
 import Grid from "@mui/material/Grid";
 
-function Board({ level, getDifficultyMenu, setNoOflags, noOfFlags, noOfBombs }) {
+function Board({
+  level,
+  getDifficultyMenu,
+  setNoOflags,
+  noOfFlags,
+  noOfBombs,
+}) {
   const [board, setBoard] = useState([]);
-  
+
   useEffect(() => {
     setBoard(getBoard(level));
   }, [level]);
 
+  const rows = getNoOfRows(level);
+  const columns = getNoOfColumns(level);
+  
 
   useEffect(() => {
     const squares = getNoOfSquare(level);
-    let cnt = 0;
+    let found = 0;
     let flag = 0;
     for (let row of board) {
       for (let each of row) {
@@ -35,11 +44,11 @@ function Board({ level, getDifficultyMenu, setNoOflags, noOfFlags, noOfBombs }) 
             setBoard(getBoard(level));
           });
         } else if (each.val !== -1 && each.isVisible) {
-          cnt += 1;
+          found += 1;
         }
       }
     }
-    if (cnt === squares - noOfBombs) {
+    if (found === squares - noOfBombs && flag === noOfBombs) {
       getAlertBox(true, "Congratulation! You Won", () => {
         getDifficultyMenu();
         setBoard(getBoard(level));
@@ -49,9 +58,6 @@ function Board({ level, getDifficultyMenu, setNoOflags, noOfFlags, noOfBombs }) 
   }, [board, getDifficultyMenu, level, noOfBombs, setNoOflags]);
 
   const handleRightClick = (id) => {
-    const rows = getNoOfRows(level);
-    const columns = getNoOfColumns(level);
-
     const row = Math.floor(id / columns);
     const col = id % columns;
 
@@ -77,9 +83,6 @@ function Board({ level, getDifficultyMenu, setNoOflags, noOfFlags, noOfBombs }) 
   };
 
   const handleClick = (id) => {
-    const rows = getNoOfRows(level);
-    const columns = getNoOfColumns(level);
-
     const row = Math.floor(id / columns);
     const col = id % columns;
 
@@ -131,12 +134,12 @@ function Board({ level, getDifficultyMenu, setNoOflags, noOfFlags, noOfBombs }) 
     });
   };
 
-  const width = (getCellSize(level) + 1) * getNoOfColumns(level);
+  const width = (getCellSize(level) + 1) * getNoOfColumns(level) + 18;
   const size = getCellSize(level);
 
   return !level ? null : (
     <Grid container spacing={2}>
-      <Grid item width={width + 18}>
+      <Grid item width={width}>
         <table>
           <tbody>
             {board.map((item, _) => (
@@ -145,6 +148,8 @@ function Board({ level, getDifficultyMenu, setNoOflags, noOfFlags, noOfBombs }) 
                   <Square
                     key={each.id}
                     id={each.id}
+                    row={Math.floor(each.id / columns)}
+                    column={each.id % columns}
                     val={each.val}
                     isVisible={each.isVisible}
                     isFlag={each.isFlag}
