@@ -114,7 +114,7 @@ function Header({
         <Snackbar
           open={snackBar}
           autoHideDuration={3000}
-          message="Link copied!"
+          message="Share Not Supported... Link copied in clipboard!"
           onClose={handleClose}
           action={action}
         />
