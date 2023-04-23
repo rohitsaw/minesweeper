@@ -48,10 +48,12 @@ function Square({
   };
 
   const handleMouseEnter = () => {
+    if (isVisible) return;
     setBackGroudColor("#a5e537");
   };
 
   const handleMouseOut = () => {
+    if (isVisible) return;
     setBackGroudColor(getBackGroudColor(row, column, isVisible));
   };
 
