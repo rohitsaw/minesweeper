@@ -23,12 +23,14 @@ function Board({
   setNoOflags,
   noOfFlags,
   noOfBombs,
+  isSoundEnabled
 }) {
+
   const [board, setBoard] = useState([]);
-  const [playRightMoveSound] = useSound(rightSound);
-  const [playGameWinSound] = useSound(gameWinSound);
-  const [playGameOverSound] = useSound(gameOver);
-  const [playPlaceFlagSound] = useSound(placeFlagSound);
+  const [playRightMoveSound] = useSound(rightSound, {soundEnabled : isSoundEnabled});
+  const [playGameWinSound] = useSound(gameWinSound, {soundEnabled : isSoundEnabled});
+  const [playGameOverSound] = useSound(gameOver, {soundEnabled : isSoundEnabled});
+  const [playPlaceFlagSound] = useSound(placeFlagSound, {soundEnabled : isSoundEnabled});
 
   useEffect(() => {
     setBoard(getBoard(level));
@@ -106,7 +108,7 @@ function Board({
     const row = Math.floor(id / columns);
     const col = id % columns;
 
-    if (board[row][col].isFlag) return;
+    if (board[row][col].isFlag || board[row][col].isVisible) return;
 
     const dx = [0, 0, -1, 1, -1, -1, 1, 1];
     const dy = [1, -1, 0, 0, -1, 1, -1, 1];

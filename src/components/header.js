@@ -4,11 +4,19 @@ import ShareIcon from "@mui/icons-material/Share";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
 import FlagIcon from "@mui/icons-material/Flag";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import Snackbar from "@mui/material/Snackbar";
 
 import { getNoOfColumns, getCellSize } from "../utilFunctions/utils";
 
-function Header({ level, noOfFlags, getDifficultyMenu }) {
+function Header({
+  level,
+  noOfFlags,
+  getDifficultyMenu,
+  isSoundEnabled,
+  setIsSoundEnabled,
+}) {
   const [snackBar, setSnackBar] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -83,6 +91,17 @@ function Header({ level, noOfFlags, getDifficultyMenu }) {
 
         <IconButton
           size="large"
+          aria-label="Volume Button"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          sx={{ color: "white" }}
+          onClick={() => setIsSoundEnabled(isSoundEnabled ? false : true)}
+        >
+          {isSoundEnabled ? <VolumeUpIcon /> : <VolumeOffIcon />}
+        </IconButton>
+
+        <IconButton
+          size="large"
           aria-label="Share Application Link"
           aria-controls="menu-appbar"
           aria-haspopup="true"
@@ -105,4 +124,3 @@ function Header({ level, noOfFlags, getDifficultyMenu }) {
 }
 
 export default Header;
-
