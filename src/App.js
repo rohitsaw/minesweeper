@@ -8,7 +8,7 @@ import { getNoOfBomb, getNoOfFlag } from "./utilFunctions/utils";
 const App = () => {
   const [difficultyLevel, setDifficulty] = useState("Hard");
   const [noOfFlags, setNoOflags] = useState(getNoOfFlag(difficultyLevel));
-  const [noOfBombs, setNoOfBombs] = useState(getNoOfBomb(level));
+  const [noOfBombs, setNoOfBombs] = useState(getNoOfBomb(difficultyLevel));
 
   useEffect(() => {
     getDifficultyMenu();
