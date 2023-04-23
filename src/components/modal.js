@@ -38,7 +38,7 @@ const MyAlert = ({ isWon, msg, functionToExecute }) => {
     html: <i>{msg}</i>,
     icon: isWon ? "success" : "error",
     allowOutsideClick: false,
-    confirmButtonText: "Restart Game.",
+    confirmButtonText: "Restart Game!",
 
     showCloseButton: true
   }).then(() => {

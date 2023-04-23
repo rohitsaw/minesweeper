@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Square from "./square";
+import useSound from "use-sound";
 
 import getBoard from "../utilFunctions/getBoard.js";
 import { getAlert as getAlertBox } from "./modal.js";
@@ -11,6 +12,10 @@ import {
   getCellSize,
 } from "../utilFunctions/utils.js";
 import Grid from "@mui/material/Grid";
+import rightSound from "../assets/right.wav";
+import gameWinSound from "../assets/gameWin.wav";
+import gameOver from "../assets/gameOver.wav";
+import placeFlagSound from "../assets/placeFlag.wav";
 
 function Board({
   level,
@@ -20,6 +25,10 @@ function Board({
   noOfBombs,
 }) {
   const [board, setBoard] = useState([]);
+  const [playRightMoveSound] = useSound(rightSound);
+  const [playGameWinSound] = useSound(gameWinSound);
+  const [playGameOverSound] = useSound(gameOver);
+  const [playPlaceFlagSound] = useSound(placeFlagSound);
 
   useEffect(() => {
     setBoard(getBoard(level));
@@ -27,7 +36,6 @@ function Board({
 
   const rows = getNoOfRows(level);
   const columns = getNoOfColumns(level);
-  
 
   useEffect(() => {
     const squares = getNoOfSquare(level);
@@ -39,6 +47,7 @@ function Board({
           flag += 1;
         }
         if (each.val === -1 && each.isVisible) {
+          playGameOverSound();
           getAlertBox(false, "Game Over", () => {
             getDifficultyMenu();
             setBoard(getBoard(level));
@@ -49,13 +58,22 @@ function Board({
       }
     }
     if (found === squares - noOfBombs && flag === noOfBombs) {
+      playGameWinSound();
       getAlertBox(true, "Congratulation! You Won", () => {
         getDifficultyMenu();
         setBoard(getBoard(level));
       });
     }
     setNoOflags(getNoOfFlag(level) - flag);
-  }, [board, getDifficultyMenu, level, noOfBombs, setNoOflags]);
+  }, [
+    board,
+    getDifficultyMenu,
+    level,
+    noOfBombs,
+    setNoOflags,
+    playGameWinSound,
+    playGameOverSound,
+  ]);
 
   const handleRightClick = (id) => {
     const row = Math.floor(id / columns);
@@ -80,6 +98,8 @@ function Board({
       }
       return newBoard;
     });
+
+    playPlaceFlagSound();
   };
 
   const handleClick = (id) => {
@@ -132,6 +152,8 @@ function Board({
       }
       return newBoard;
     });
+
+    playRightMoveSound();
   };
 
   const width = (getCellSize(level) + 1) * getNoOfColumns(level) + 18;
