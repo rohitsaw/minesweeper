@@ -17,7 +17,7 @@ const App = () => {
   const getDifficultyMenu = useCallback(() => {
     startGame().then((result) => {
       setDifficulty(result);
-      if (level === result) setGameOver(false);
+      setGameOver(false);
     });
   }, []);
 
