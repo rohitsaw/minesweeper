@@ -69,4 +69,35 @@ const getBoard = (level, noOfBombs = 10) => {
   return newBoard;
 };
 
+const showAllMines = (board) => {
+  const rows = board?.length;
+  const columns = board[0]?.length;
+
+  const mines = [];
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      if (board[i][j].val === -1 && board[i][j].isVisible === false) {
+        mines.push({ x: i, y: j });
+      }
+    }
+  }
+  let newBoard = new Array(rows);
+  for (let i = 0; i < rows; i++) {
+    newBoard[i] = [];
+    for (let j = 0; j < columns; j++) {
+      if (mines.some((element) => element.x === i && element.y === j)) {
+        newBoard[i].push({
+          ...board[i][j],
+          isVisible: true,
+        });
+      } else {
+        newBoard[i].push({ ...board[i][j] });
+      }
+    }
+  }
+  return newBoard;
+};
+
 export default getBoard;
+
+export { showAllMines };

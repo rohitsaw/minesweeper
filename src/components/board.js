@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Square from "./square";
 import useSound from "use-sound";
 
-import getBoard from "../utilFunctions/getBoard.js";
+import { showAllMines } from "../utilFunctions/getBoard.js";
 import { getAlert as getAlertBox } from "./modal.js";
 import {
   getNoOfRows,
@@ -12,6 +12,8 @@ import {
   getCellSize,
 } from "../utilFunctions/utils.js";
 import Grid from "@mui/material/Grid";
+import Header from "./header";
+
 import rightSound from "../assets/right.wav";
 import gameWinSound from "../assets/gameWin.wav";
 import gameOver from "../assets/gameOver.wav";
@@ -19,65 +21,78 @@ import placeFlagSound from "../assets/placeFlag.wav";
 
 function Board({
   level,
-  getDifficultyMenu,
-  setNoOflags,
+
+  board,
+  setBoard,
+
   noOfFlags,
+  setNoOflags,
+
   noOfBombs,
-  isSoundEnabled
+
+  isGameOver,
+
+  isSoundEnabled,
+  setIsSoundEnabled,
+
+  restartFn,
+  dismissedFn,
 }) {
-
-  const [board, setBoard] = useState([]);
-  const [playRightMoveSound] = useSound(rightSound, {soundEnabled : isSoundEnabled});
-  const [playGameWinSound] = useSound(gameWinSound, {soundEnabled : isSoundEnabled});
-  const [playGameOverSound] = useSound(gameOver, {soundEnabled : isSoundEnabled});
-  const [playPlaceFlagSound] = useSound(placeFlagSound, {soundEnabled : isSoundEnabled});
-
-  useEffect(() => {
-    setBoard(getBoard(level));
-  }, [level]);
-
   const rows = getNoOfRows(level);
   const columns = getNoOfColumns(level);
+  const squares = getNoOfSquare(level);
+  const size = getCellSize(level);
+  const width = (getCellSize(level) + 1) * getNoOfColumns(level) + 4;
+
+  const [playRightMoveSound] = useSound(rightSound, {
+    soundEnabled: isSoundEnabled,
+  });
+  const [playGameWinSound] = useSound(gameWinSound, {
+    soundEnabled: isSoundEnabled,
+  });
+  const [playGameOverSound] = useSound(gameOver, {
+    soundEnabled: isSoundEnabled,
+  });
+  const [playPlaceFlagSound] = useSound(placeFlagSound, {
+    soundEnabled: isSoundEnabled,
+  });
 
   useEffect(() => {
-    const squares = getNoOfSquare(level);
     let found = 0;
     let flag = 0;
+    let lost = false;
+    let minesFound = 0;
     for (let row of board) {
       for (let each of row) {
         if (each.isFlag) {
           flag += 1;
         }
         if (each.val === -1 && each.isVisible) {
-          playGameOverSound();
-          getAlertBox(false, "Game Over", () => {
-            getDifficultyMenu();
-            setBoard(getBoard(level));
-          });
+          lost = true;
+          minesFound += 1;
         } else if (each.val !== -1 && each.isVisible) {
           found += 1;
         }
       }
     }
-    if (found === squares - noOfBombs && flag === noOfBombs) {
+
+    if (lost === true && minesFound < noOfBombs) {
+      setBoard((prevBoard) => showAllMines(prevBoard));
+    } else if (lost === true) {
+      playGameOverSound();
+      getAlertBox(false, "Game Over", restartFn, dismissedFn);
+    } else if (found === squares - noOfBombs && flag === noOfBombs) {
       playGameWinSound();
-      getAlertBox(true, "Congratulation! You Won", () => {
-        getDifficultyMenu();
-        setBoard(getBoard(level));
-      });
+      getAlertBox(true, "Congratulation! You Won", restartFn, dismissedFn);
     }
     setNoOflags(getNoOfFlag(level) - flag);
   }, [
     board,
-    getDifficultyMenu,
-    level,
-    noOfBombs,
-    setNoOflags,
-    playGameWinSound,
-    playGameOverSound,
   ]);
 
   const handleRightClick = (id) => {
+    if (isGameOver) return;
+
     const row = Math.floor(id / columns);
     const col = id % columns;
 
@@ -105,6 +120,8 @@ function Board({
   };
 
   const handleClick = (id) => {
+    if (isGameOver) return;
+
     const row = Math.floor(id / columns);
     const col = id % columns;
 
@@ -113,7 +130,10 @@ function Board({
     const dx = [0, 0, -1, 1, -1, -1, 1, 1];
     const dy = [1, -1, 0, 0, -1, 1, -1, 1];
 
+    // for bfs queue
     let arr = [];
+
+    // for tracking visted element
     let tmp = [];
     arr.push({ x: row, y: col });
     tmp.push({ x: row, y: col });
@@ -127,7 +147,8 @@ function Board({
           if (xi >= 0 && yi >= 0 && xi < rows && yi < columns) {
             if (
               !tmp.some((ele) => ele.x === xi && ele.y === yi) &&
-              board[xi][yi].val !== -1
+              board[xi][yi].val !== -1 &&
+              !board[xi][yi].isFlag
             ) {
               arr.push({ x: xi, y: yi });
               tmp.push({ x: xi, y: yi });
@@ -158,40 +179,47 @@ function Board({
     playRightMoveSound();
   };
 
-  const width = (getCellSize(level) + 1) * getNoOfColumns(level) + 18;
-  const size = getCellSize(level);
-
   return !level ? null : (
-    <Grid container spacing={2}>
-      <Grid item width={width}>
-        <table>
-          <tbody>
-            {board.map((item, _) => (
-              <tr style={{ display: "flex" }}>
-                {item.map((each) => (
-                  <Square
-                    key={each.id}
-                    id={each.id}
-                    row={Math.floor(each.id / columns)}
-                    column={each.id % columns}
-                    val={each.val}
-                    isVisible={each.isVisible}
-                    isFlag={each.isFlag}
-                    handleClick={handleClick}
-                    handleRightClick={handleRightClick}
-                    size={size}
-                  />
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <>
+      <Header
+        width={width}
+        level={level}
+        noOfFlags={noOfFlags}
+        getDifficultyMenu={restartFn}
+        isSoundEnabled={isSoundEnabled}
+        setIsSoundEnabled={setIsSoundEnabled}
+      />
+      <Grid container>
+        <Grid item>
+          <table>
+            <tbody>
+              {board.map((item, _) => (
+                <tr style={{ display: "flex" }}>
+                  {item.map((each) => (
+                    <Square
+                      key={each.id}
+                      id={each.id}
+                      row={Math.floor(each.id / columns)}
+                      column={each.id % columns}
+                      val={each.val}
+                      isVisible={each.isVisible}
+                      isFlag={each.isFlag}
+                      handleClick={handleClick}
+                      handleRightClick={handleRightClick}
+                      size={size}
+                    />
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <div>How To Play?</div>
+          <div> Coming Soon! </div>
+        </Grid>
       </Grid>
-      <Grid item xs={12} lg={6}>
-        <div>How To Play?</div>
-        <div> Coming Soon! </div>
-      </Grid>
-    </Grid>
+    </>
   );
 }
 

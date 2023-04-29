@@ -30,7 +30,8 @@ export const startGame = async () => {
   }
 };
 
-const MyAlert = ({ isWon, msg, functionToExecute }) => {
+
+export const getAlert = (isWon, msg, restartFn, dismissedFn) => {
   const MySwal = withReactContent(Swal);
 
   MySwal.fire({
@@ -41,15 +42,12 @@ const MyAlert = ({ isWon, msg, functionToExecute }) => {
     confirmButtonText: "Restart Game!",
 
     showCloseButton: true
-  }).then(() => {
-    return functionToExecute();
-  });
-};
-
-export const getAlert = (isWon, msg, callbackFn) => {
-  MyAlert({
-    isWon: isWon,
-    msg: msg,
-    functionToExecute: callbackFn,
+  }).then((result) => {
+    if (!result.isDismissed)
+      return restartFn();
+    else{
+      console.log("Dismissed!")
+      return dismissedFn();
+    }
   });
 };

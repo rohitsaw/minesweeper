@@ -8,9 +8,8 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import Snackbar from "@mui/material/Snackbar";
 
-import { getNoOfColumns, getCellSize } from "../utilFunctions/utils";
-
 function Header({
+  width,
   level,
   noOfFlags,
   getDifficultyMenu,
@@ -53,7 +52,6 @@ function Header({
     </React.Fragment>
   );
 
-  const width = (getCellSize(level) + 1) * getNoOfColumns(level) + 3;
   return (
     <>
       <div
@@ -71,9 +69,9 @@ function Header({
         <IconButton
           color="inherit"
           onClick={getDifficultyMenu}
-          sx={{ marginLeft: "20px", color: "white" }}
+          sx={{ color: "white" }}
         >
-          <div style={{ fontSize: 16, marginLeft: "8px" }}> {level}</div>
+          <div style={{ fontSize: 16 }}> {level}</div>
           <ArrowDropDownIcon />
         </IconButton>
 
@@ -81,12 +79,11 @@ function Header({
           style={{
             display: "flex",
             flexGrow: 2,
-            marginLeft: "12px",
             color: "white",
           }}
         >
-          <FlagIcon style={{ color: "#D80005" }} />
-          <span style={{ marginLeft: "8px" }}>{noOfFlags}</span>
+          <FlagIcon style={{ color: "#D80005", paddingRight: "10px" }} />
+          <span>{noOfFlags}</span>
         </div>
 
         <IconButton
@@ -106,19 +103,18 @@ function Header({
           aria-controls="menu-appbar"
           aria-haspopup="true"
           onClick={shareUrl}
-          sx={{ marginRight: "24px", color: "white" }}
+          sx={{ color: "white" }}
         >
           <ShareIcon />
         </IconButton>
-
-        <Snackbar
-          open={snackBar}
-          autoHideDuration={3000}
-          message="Share Not Supported... Link copied in clipboard!"
-          onClose={handleClose}
-          action={action}
-        />
       </div>
+      <Snackbar
+        open={snackBar}
+        autoHideDuration={3000}
+        message="Share Not Supported... Link copied in clipboard!"
+        onClose={handleClose}
+        action={action}
+      />
     </>
   );
 }
