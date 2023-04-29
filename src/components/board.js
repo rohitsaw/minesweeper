@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Square from "./square";
 import useSound from "use-sound";
 
@@ -36,7 +36,7 @@ function Board({
   setIsSoundEnabled,
 
   restartFn,
-  dismissedFn,
+  gameOverFn,
 }) {
   const rows = getNoOfRows(level);
   const columns = getNoOfColumns(level);
@@ -56,6 +56,8 @@ function Board({
   const [playPlaceFlagSound] = useSound(placeFlagSound, {
     soundEnabled: isSoundEnabled,
   });
+
+  const [currentClickCellId, setCurrentClick] = useState(-1);
 
   useEffect(() => {
     let found = 0;
@@ -80,15 +82,15 @@ function Board({
       setBoard((prevBoard) => showAllMines(prevBoard));
     } else if (lost === true) {
       playGameOverSound();
-      getAlertBox(false, "Game Over", restartFn, dismissedFn);
+      gameOverFn();
+      getAlertBox(false, "Game Over", restartFn);
     } else if (found === squares - noOfBombs && flag === noOfBombs) {
       playGameWinSound();
-      getAlertBox(true, "Congratulation! You Won", restartFn, dismissedFn);
+      gameOverFn()
+      getAlertBox(true, "Congratulation! You Won", restartFn);
     }
     setNoOflags(getNoOfFlag(level) - flag);
-  }, [
-    board,
-  ]);
+  }, [board]);
 
   const handleRightClick = (id) => {
     if (isGameOver) return;
@@ -126,6 +128,8 @@ function Board({
     const col = id % columns;
 
     if (board[row][col].isFlag || board[row][col].isVisible) return;
+
+    setCurrentClick(id);
 
     const dx = [0, 0, -1, 1, -1, -1, 1, 1];
     const dy = [1, -1, 0, 0, -1, 1, -1, 1];
@@ -207,6 +211,7 @@ function Board({
                       handleClick={handleClick}
                       handleRightClick={handleRightClick}
                       size={size}
+                      isCurrentClickCellId={currentClickCellId === each.id}
                     />
                   ))}
                 </tr>

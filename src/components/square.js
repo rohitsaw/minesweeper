@@ -1,15 +1,5 @@
 import { useEffect, useState } from "react";
-
-function getBackGroudColor({ row, column }, val, isVisible, isFlag) {
-  if (isVisible) {
-    if (val === -1 && isFlag) return "#F23506";
-    else if (row & 1) return column % 2 === 0 ? "#D7B899" : "#E4C29E";
-    else return column % 2 !== 0 ? "#D7B899" : "#E4C29E";
-  } else {
-    if (row & 1) return column % 2 === 0 ? "#A6D948" : "#8DCB3A";
-    else return column % 2 !== 0 ? "#A6D948" : "#8DCB3A";
-  }
-}
+import { getBackGroudColor } from "../utilFunctions/utils.js";
 
 function Square({
   id,
@@ -21,14 +11,27 @@ function Square({
   size,
   row,
   column,
+  isCurrentClickCellId,
 }) {
   const [backgroundColor, setBackGroudColor] = useState(
-    getBackGroudColor({ row, column }, val, isVisible, isFlag)
+    getBackGroudColor(
+      { row, column },
+      val,
+      isVisible,
+      isFlag,
+      isCurrentClickCellId
+    )
   );
 
   useEffect(() => {
     setBackGroudColor(
-      getBackGroudColor({ row, column }, val, isVisible, isFlag)
+      getBackGroudColor(
+        { row, column },
+        val,
+        isVisible,
+        isFlag,
+        isCurrentClickCellId
+      )
     );
   }, [row, column, isVisible, val, isFlag]);
 
@@ -58,7 +61,13 @@ function Square({
   const handleMouseOut = () => {
     if (isVisible) return;
     setBackGroudColor(
-      getBackGroudColor({ row, column }, val, isVisible, isFlag)
+      getBackGroudColor(
+        { row, column },
+        val,
+        isVisible,
+        isFlag,
+        isCurrentClickCellId
+      )
     );
   };
 

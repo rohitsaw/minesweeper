@@ -31,7 +31,7 @@ export const startGame = async () => {
 };
 
 
-export const getAlert = (isWon, msg, restartFn, dismissedFn) => {
+export const getAlert = (isWon, msg, restartFn) => {
   const MySwal = withReactContent(Swal);
 
   MySwal.fire({
@@ -45,9 +45,5 @@ export const getAlert = (isWon, msg, restartFn, dismissedFn) => {
   }).then((result) => {
     if (!result.isDismissed)
       return restartFn();
-    else{
-      console.log("Dismissed!")
-      return dismissedFn();
-    }
   });
 };
