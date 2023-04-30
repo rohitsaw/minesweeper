@@ -8,14 +8,7 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import Snackbar from "@mui/material/Snackbar";
 
-function Header({
-  width,
-  level,
-  noOfFlags,
-  getDifficultyMenu,
-  isSoundEnabled,
-  setIsSoundEnabled,
-}) {
+function Header({ width, state, dispatch, getDifficultyMenu }) {
   const [snackBar, setSnackBar] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -71,7 +64,7 @@ function Header({
           onClick={getDifficultyMenu}
           sx={{ color: "white" }}
         >
-          <div style={{ fontSize: 16 }}> {level}</div>
+          <div style={{ fontSize: 16 }}> {state.level}</div>
           <ArrowDropDownIcon />
         </IconButton>
 
@@ -83,7 +76,7 @@ function Header({
           }}
         >
           <FlagIcon style={{ color: "#D80005", paddingRight: "10px" }} />
-          <span>{noOfFlags}</span>
+          <span>{state.noOfFlags}</span>
         </div>
 
         <IconButton
@@ -92,9 +85,14 @@ function Header({
           aria-controls="menu-appbar"
           aria-haspopup="true"
           sx={{ color: "white" }}
-          onClick={() => setIsSoundEnabled(isSoundEnabled ? false : true)}
+          onClick={() =>
+            dispatch({
+              type: "setSoundEnabled",
+              payload: state.isSoundEnabled ? false : true,
+            })
+          }
         >
-          {isSoundEnabled ? <VolumeUpIcon /> : <VolumeOffIcon />}
+          {state.isSoundEnabled ? <VolumeUpIcon /> : <VolumeOffIcon />}
         </IconButton>
 
         <IconButton

@@ -8,7 +8,6 @@ import {
   getNoOfRows,
   getNoOfColumns,
   getNoOfSquare,
-  getNoOfFlag,
   getCellSize,
 } from "../utilFunctions/utils.js";
 import Grid from "@mui/material/Grid";
@@ -19,52 +18,37 @@ import gameWinSound from "../assets/gameWin.wav";
 import gameOver from "../assets/gameOver.wav";
 import placeFlagSound from "../assets/placeFlag.wav";
 
-function Board({
-  level,
-
-  board,
-  setBoard,
-
-  noOfFlags,
-  setNoOflags,
-
-  noOfBombs,
-
-  isGameOver,
-
-  isSoundEnabled,
-  setIsSoundEnabled,
-
-  restartFn,
-  gameOverFn,
-}) {
-  const rows = getNoOfRows(level);
-  const columns = getNoOfColumns(level);
-  const squares = getNoOfSquare(level);
-  const size = getCellSize(level);
-  const width = (getCellSize(level) + 1) * getNoOfColumns(level) + 4;
+function Board({ state, dispatch, restartFn }) {
+  const rows = getNoOfRows(state.level);
+  const columns = getNoOfColumns(state.level);
+  const squares = getNoOfSquare(state.level);
+  const size = getCellSize(state.level);
+  const width =
+    (getCellSize(state.level) + 1) * getNoOfColumns(state.level) + 4;
 
   const [playRightMoveSound] = useSound(rightSound, {
-    soundEnabled: isSoundEnabled,
+    soundEnabled: state.isSoundEnabled,
   });
   const [playGameWinSound] = useSound(gameWinSound, {
-    soundEnabled: isSoundEnabled,
+    soundEnabled: state.isSoundEnabled,
   });
   const [playGameOverSound] = useSound(gameOver, {
-    soundEnabled: isSoundEnabled,
+    soundEnabled: state.isSoundEnabled,
   });
   const [playPlaceFlagSound] = useSound(placeFlagSound, {
-    soundEnabled: isSoundEnabled,
+    soundEnabled: state.isSoundEnabled,
   });
 
   const [currentClickCellId, setCurrentClick] = useState(-1);
 
   useEffect(() => {
+    if (state.isGameOver) return;
     let found = 0;
     let flag = 0;
     let lost = false;
     let minesFound = 0;
-    for (let row of board) {
+
+    for (let row of state.board) {
       for (let each of row) {
         if (each.isFlag) {
           flag += 1;
@@ -78,56 +62,55 @@ function Board({
       }
     }
 
-    if (lost === true && minesFound < noOfBombs) {
-      setBoard((prevBoard) => showAllMines(prevBoard));
-    } else if (lost === true) {
+    dispatch({ type: "setNoOfFlag", payload: flag });
+
+    if (lost === true && minesFound < state.noOfBombs) {
+      dispatch({ type: "setGameOver", payload: showAllMines(state.board) });
       playGameOverSound();
-      gameOverFn();
       getAlertBox(false, "Game Over", restartFn);
-    } else if (found === squares - noOfBombs && flag === noOfBombs) {
+    } else if (
+      found === squares - state.noOfBombs &&
+      flag === state.noOfBombs
+    ) {
+      dispatch({ type: "setGameOver" });
       playGameWinSound();
-      gameOverFn()
       getAlertBox(true, "Congratulation! You Won", restartFn);
     }
-    setNoOflags(getNoOfFlag(level) - flag);
-  }, [board]);
+  }, [state.board]);
 
   const handleRightClick = (id) => {
-    if (isGameOver) return;
+    if (state.isGameOver) return;
 
     const row = Math.floor(id / columns);
     const col = id % columns;
 
-    if (board[row][col].isVisible) return;
-    if (!board[row][col].isFlag && noOfFlags <= 0) return;
+    if (state.board[row][col].isVisible) return;
+    if (!state.board[row][col].isFlag && state.noOfFlags <= 0) return;
 
-    setBoard((prevBoard) => {
-      let newBoard = new Array(rows);
-      for (let i = 0; i < rows; i++) {
-        newBoard[i] = [];
-        for (let j = 0; j < columns; j++) {
-          newBoard[i].push({
-            ...prevBoard[i][j],
-            isFlag:
-              i === row && j === col
-                ? !prevBoard[i][j].isFlag
-                : prevBoard[i][j].isFlag,
-          });
-        }
+    let newBoard = new Array(rows);
+    for (let i = 0; i < rows; i++) {
+      newBoard[i] = [];
+      for (let j = 0; j < columns; j++) {
+        newBoard[i].push({
+          ...state.board[i][j],
+          isFlag:
+            i === row && j === col
+              ? !state.board[i][j].isFlag
+              : state.board[i][j].isFlag,
+        });
       }
-      return newBoard;
-    });
-
+    }
+    dispatch({ type: "setBoard", payload: newBoard });
     playPlaceFlagSound();
   };
 
   const handleClick = (id) => {
-    if (isGameOver) return;
+    if (state.isGameOver) return;
 
     const row = Math.floor(id / columns);
     const col = id % columns;
 
-    if (board[row][col].isFlag || board[row][col].isVisible) return;
+    if (state.board[row][col].isFlag || state.board[row][col].isVisible) return;
 
     setCurrentClick(id);
 
@@ -144,15 +127,15 @@ function Board({
 
     while (arr.length > 0) {
       const { x, y } = arr.shift();
-      if (board[x][y].val === 0) {
+      if (state.board[x][y].val === 0) {
         for (let i = 0; i < 8; i++) {
           const xi = x + dx[i];
           const yi = y + dy[i];
           if (xi >= 0 && yi >= 0 && xi < rows && yi < columns) {
             if (
               !tmp.some((ele) => ele.x === xi && ele.y === yi) &&
-              board[xi][yi].val !== -1 &&
-              !board[xi][yi].isFlag
+              state.board[xi][yi].val !== -1 &&
+              !state.board[xi][yi].isFlag
             ) {
               arr.push({ x: xi, y: yi });
               tmp.push({ x: xi, y: yi });
@@ -161,43 +144,38 @@ function Board({
         }
       }
     }
-    setBoard((prevBoard) => {
-      let newBoard = new Array(rows);
-      for (let i = 0; i < rows; i++) {
-        newBoard[i] = [];
-        for (let j = 0; j < columns; j++) {
-          if (tmp.some((element) => element.x === i && element.y === j)) {
-            newBoard[i].push({
-              ...prevBoard[i][j],
-              isVisible: true,
-              isFlag: false,
-            });
-          } else {
-            newBoard[i].push({ ...prevBoard[i][j] });
-          }
+    let newBoard = new Array(rows);
+    for (let i = 0; i < rows; i++) {
+      newBoard[i] = [];
+      for (let j = 0; j < columns; j++) {
+        if (tmp.some((element) => element.x === i && element.y === j)) {
+          newBoard[i].push({
+            ...state.board[i][j],
+            isVisible: true,
+            isFlag: false,
+          });
+        } else {
+          newBoard[i].push({ ...state.board[i][j] });
         }
       }
-      return newBoard;
-    });
-
+    }
+    dispatch({ type: "setBoard", payload: newBoard });
     playRightMoveSound();
   };
 
-  return !level ? null : (
+  return !state.level ? null : (
     <>
       <Header
         width={width}
-        level={level}
-        noOfFlags={noOfFlags}
+        state={state}
+        dispatch={dispatch}
         getDifficultyMenu={restartFn}
-        isSoundEnabled={isSoundEnabled}
-        setIsSoundEnabled={setIsSoundEnabled}
       />
       <Grid container>
         <Grid item>
           <table>
             <tbody>
-              {board.map((item, _) => (
+              {state.board.map((item, _) => (
                 <tr style={{ display: "flex" }}>
                   {item.map((each) => (
                     <Square

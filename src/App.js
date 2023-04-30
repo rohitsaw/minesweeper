@@ -1,58 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useReducer } from "react";
 import Board from "../src/components/board";
 
 import { startGame } from "./components/modal";
-import { getNoOfBomb, getNoOfFlag } from "./utilFunctions/utils";
-import getBoard from "./utilFunctions/getBoard.js";
+import reducerFn, { initStateFn } from "./utilFunctions/reducer";
 
 const App = () => {
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
-  const [level, setDifficulty] = useState("Hard");
-  const [noOfFlags, setNoOflags] = useState(getNoOfFlag(level));
-  const [noOfBombs, setNoOfBombs] = useState(getNoOfBomb(level));
-  const [board, setBoard] = useState([[]]);
-
-  const [isGameOver, setGameOver] = useState(false);
+  const [state, dispatch] = useReducer(reducerFn, "Hard", initStateFn);
 
   const getDifficultyMenu = useCallback(() => {
     startGame().then((result) => {
-      setDifficulty(result);
-      setGameOver(false);
+      dispatch({ type: "setLevel", payload: result });
     });
   }, []);
 
-  useEffect(() => getDifficultyMenu(), [getDifficultyMenu]);
-
-  useEffect(() => {
-    setNoOflags(getNoOfFlag(level));
-    setNoOfBombs(getNoOfBomb(level));
-    setBoard(getBoard(level));
-  }, [level]);
-
-  useEffect(() => {
-    if (!isGameOver) {
-      setNoOflags(getNoOfFlag(level));
-      setNoOfBombs(getNoOfBomb(level));
-      setBoard(getBoard(level));
-    }
-  }, [isGameOver]);
-
-  const gameOverFn = () => setGameOver(true);
-
   return (
-    <Board
-      level={level}
-      board={board}
-      setBoard={setBoard}
-      noOfFlags={noOfFlags}
-      setNoOflags={setNoOflags}
-      noOfBombs={noOfBombs}
-      isGameOver={isGameOver}
-      isSoundEnabled={isSoundEnabled}
-      setIsSoundEnabled={setIsSoundEnabled}
-      restartFn={getDifficultyMenu}
-      gameOverFn={gameOverFn}
-    />
+    <Board state={state} dispatch={dispatch} restartFn={getDifficultyMenu} />
   );
 };
 

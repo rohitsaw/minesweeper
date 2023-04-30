@@ -33,7 +33,7 @@ function Square({
         isCurrentClickCellId
       )
     );
-  }, [row, column, isVisible, val, isFlag]);
+  }, [row, column, isVisible, val, isFlag, isCurrentClickCellId]);
 
   const bomb = "0x1F4A3";
 
