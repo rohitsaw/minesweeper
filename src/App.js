@@ -13,17 +13,15 @@ const App = () => {
   return (
     <div
       style={{
+        width: "100%",
         height: window.innerHeight,
-        width: window.innerWidth,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: isMobile ? "white" : "#1a1e23",
       }}
     >
-      <div
-
-      >
+      <div>
         <Header state={state} dispatch={dispatch} />
         <Board state={state} dispatch={dispatch} />
       </div>
