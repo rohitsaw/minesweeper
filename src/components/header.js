@@ -36,6 +36,7 @@ function Header({ state, dispatch }) {
 
   const width =
     (getCellSize(state.level) + 1 + 2) * getNoOfColumns(state.level) + 4;
+  const height = window.innerWidth < 720 ? "42px" : "56px";
 
   const action = (
     <React.Fragment>
@@ -55,10 +56,10 @@ function Header({ state, dispatch }) {
       <div
         style={{
           width: `${width}px`,
+          height: height,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          height: "56px",
           background: "#59870a",
           fontWeight: "500",
           fontSize: "1.25em",

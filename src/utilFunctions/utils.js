@@ -1,39 +1,69 @@
 export function getNoOfFlag(level) {
   if (!level) return 0;
-  if (level === "Easy") return 10;
-  if (level === "Medium") return 40;
-  if (level === "Hard") return 99;
+  if (window.innerWidth < 720) {
+    if (level === "Easy") return 10;
+    if (level === "Medium") return 35;
+    if (level === "Hard") return 75;
+  } else {
+    if (level === "Easy") return 10;
+    if (level === "Medium") return 40;
+    if (level === "Hard") return 99;
+  }
 }
 
 export function getNoOfBomb(level) {
   if (!level) return 0;
-  if (level === "Easy") return 10;
-  if (level === "Medium") return 40;
-  if (level === "Hard") return 99;
+  if (window.innerWidth < 720) {
+    if (level === "Easy") return 10;
+    if (level === "Medium") return 35;
+    if (level === "Hard") return 75;
+  } else {
+    if (level === "Easy") return 10;
+    if (level === "Medium") return 40;
+    if (level === "Hard") return 99;
+  }
 }
 
 export function getNoOfSquare(level) {
-  if (level === "Easy") return 8 * 10;
-  if (level === "Medium") return 14 * 18;
-  if (level === "Hard") return 20 * 24;
+  if (window.innerWidth < 720) {
+    if (level === "Easy") return 12 * 6;
+    if (level === "Medium") return 19 * 10;
+    if (level === "Hard") return 26 * 13;
+  } else {
+    if (level === "Easy") return 8 * 10;
+    if (level === "Medium") return 14 * 18;
+    if (level === "Hard") return 20 * 24;
+  }
 }
 
 export function getNoOfRows(level) {
-  if (level === "Easy") return 8;
-  if (level === "Medium") return 14;
-  if (level === "Hard") return 20;
+  if (window.innerWidth < 720) {
+    if (level === "Easy") return 12;
+    if (level === "Medium") return 19;
+    if (level === "Hard") return 26;
+  } else {
+    if (level === "Easy") return 8;
+    if (level === "Medium") return 14;
+    if (level === "Hard") return 20;
+  }
 }
 
 export function getNoOfColumns(level) {
-  if (level === "Easy") return 10;
-  if (level === "Medium") return 18;
-  if (level === "Hard") return 24;
+  if (window.innerWidth < 720) {
+    if (level === "Easy") return 6;
+    if (level === "Medium") return 10;
+    if (level === "Hard") return 13;
+  } else {
+    if (level === "Easy") return 10;
+    if (level === "Medium") return 18;
+    if (level === "Hard") return 24;
+  }
 }
 
 export function getCellSize(level) {
   if (level === "Hard") return 24;
-  if (level === "Easy") return 48;
-  if (level === "Medium") return 36;
+  if (level === "Easy") return 54;
+  if (level === "Medium") return 32;
 }
 
 export function getBackGroudColor(

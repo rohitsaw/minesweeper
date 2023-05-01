@@ -10,7 +10,10 @@ export const restartGameFn = (dispatch) => {
 };
 
 export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound) => {
-  if (state.isGameOver) return;
+  if (state.isGameOver) {
+    getAlertBox(state.isGameWon, () => restartGameFn(dispatch));
+    return;
+  }
 
   const rows = getNoOfRows(state.level);
   const columns = getNoOfColumns(state.level);
@@ -36,10 +39,12 @@ export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound) => {
   }
 
   dispatch({
-    type: "setNoOfFlag",
-    payload: state.board[row][col].isFlag ? 1 : -1,
+    type: "setBoard",
+    payload: {
+      board: newBoard,
+      noOfFlags: state.board[row][col].isFlag ? 1 : -1,
+    },
   });
-  dispatch({ type: "setBoard", payload: newBoard });
   playPlaceFlagSound();
 };
 
@@ -51,7 +56,10 @@ export const handleClick = (
   playGameOverSound,
   playGameWinSound
 ) => {
-  if (state.isGameOver) return;
+  if (state.isGameOver) {
+    getAlertBox(state.isGameWon, () => restartGameFn(dispatch));
+    return;
+  }
 
   const rows = getNoOfRows(state.level);
   const columns = getNoOfColumns(state.level);
@@ -126,18 +134,24 @@ export const handleClick = (
   }
 
   if (lost === true) {
-    dispatch({ type: "setGameOver", payload: showAllMines(newBoard) });
+    dispatch({
+      type: "setGameOver",
+      payload: { board: showAllMines(newBoard), isGameWon: false },
+    });
     playGameOverSound();
-    getAlertBox(false, "Game Over", () => restartGameFn(dispatch));
+    getAlertBox(false, () => restartGameFn(dispatch));
   } else if (
     found === squares - state.noOfBombs &&
     markedFlag === state.noOfBombs
   ) {
-    dispatch({ type: "setGameOver", payload: showAllMines(newBoard) });
+    dispatch({
+      type: "setGameOver",
+      payload: { board: showAllMines(newBoard), isGameWon: true },
+    });
     playGameWinSound();
-    getAlertBox(true, "Congratulation! You Won", () => restartGameFn(dispatch));
+    getAlertBox(true, () => restartGameFn(dispatch));
   } else {
-    dispatch({ type: "setBoard", payload: newBoard });
+    dispatch({ type: "setBoard", payload: { board: newBoard } });
     playRightMoveSound();
   }
 };

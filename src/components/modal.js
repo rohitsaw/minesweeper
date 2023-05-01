@@ -11,8 +11,6 @@ export const startGame = async () => {
     denyButtonText: "Medium",
     cancelButtonText: "Hard",
 
-    // confirmButtonColor: '#3085d6',
-    // denyButtonColor : '#3085d6',
     cancelButtonColor: "#f5b042",
 
     allowOutsideClick: false,
@@ -30,20 +28,18 @@ export const startGame = async () => {
   }
 };
 
-
-export const getAlert = (isWon, msg, restartFn) => {
+export const getAlert = (isWon, restartFn) => {
   const MySwal = withReactContent(Swal);
 
   MySwal.fire({
     title: <p>{isWon ? "Good Job!" : "Better Luck Next Time!"}</p>,
-    html: <i>{msg}</i>,
+    html: <i>{isWon ? "Congratulation! You Won" : "Game Over"}</i>,
     icon: isWon ? "success" : "error",
     allowOutsideClick: false,
     confirmButtonText: "Restart Game!",
 
-    showCloseButton: true
+    showCloseButton: true,
   }).then((result) => {
-    if (!result.isDismissed)
-      return restartFn();
+    if (!result.isDismissed) return restartFn();
   });
 };

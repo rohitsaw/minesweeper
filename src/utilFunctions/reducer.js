@@ -9,6 +9,7 @@ export function initStateFn(level) {
     noOfBombs: getNoOfBomb(level),
     board: getBoard(level),
     isGameOver: false,
+    isGameWon: false,
     currentClickCellId: -1,
   };
 }
@@ -30,22 +31,22 @@ export default function reducer(state, action) {
             noOfBombs: getNoOfBomb(action.payload),
             board: getBoard(action.payload),
             isGameOver: false,
+            isGameWon: false,
           };
-    case "setNoOfFlag":
-      return {
-        ...state,
-        noOfFlags: state.noOfFlags + action.payload,
-      };
     case "setBoard":
       return {
         ...state,
-        board: action.payload,
+        board: action.payload.board,
+        noOfFlags:
+          state.noOfFlags +
+          (action.payload.noOfFlags ? action.payload.noOfFlags : 0),
       };
     case "setGameOver":
       return {
         ...state,
         isGameOver: true,
-        board: action.payload ?? state.board,
+        isGameWon: action.payload.isGameWon,
+        board: action.payload.board ?? state.board,
       };
     case "setCurrentClickCellId":
       return {
