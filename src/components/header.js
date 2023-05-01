@@ -7,8 +7,10 @@ import FlagIcon from "@mui/icons-material/Flag";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import Snackbar from "@mui/material/Snackbar";
+import { getCellSize, getNoOfColumns } from "../utilFunctions/utils";
+import { restartGameFn } from "../utilFunctions/action.js";
 
-function Header({ width, state, dispatch, getDifficultyMenu }) {
+function Header({ state, dispatch }) {
   const [snackBar, setSnackBar] = useState(false);
 
   const handleClose = (event, reason) => {
@@ -32,6 +34,9 @@ function Header({ width, state, dispatch, getDifficultyMenu }) {
     }
   };
 
+  const width =
+    (getCellSize(state.level) + 1 + 2) * getNoOfColumns(state.level) + 4;
+
   const action = (
     <React.Fragment>
       <IconButton
@@ -49,19 +54,19 @@ function Header({ width, state, dispatch, getDifficultyMenu }) {
     <>
       <div
         style={{
-          width: width,
-          height: "56px",
-          background: "#59870a",
+          width: `${width}px`,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          height: "56px",
+          background: "#59870a",
           fontWeight: "500",
           fontSize: "1.25em",
         }}
       >
         <IconButton
           color="inherit"
-          onClick={getDifficultyMenu}
+          onClick={() => restartGameFn(dispatch)}
           sx={{ color: "white" }}
         >
           <div style={{ fontSize: 16 }}> {state.level}</div>
@@ -71,13 +76,14 @@ function Header({ width, state, dispatch, getDifficultyMenu }) {
         <div
           style={{
             display: "flex",
-            flexGrow: 2,
             color: "white",
           }}
         >
           <FlagIcon style={{ color: "#D80005", paddingRight: "10px" }} />
           <span>{state.noOfFlags}</span>
         </div>
+
+        <div style={{ flexGrow: 2 }}></div>
 
         <IconButton
           size="large"
@@ -87,8 +93,7 @@ function Header({ width, state, dispatch, getDifficultyMenu }) {
           sx={{ color: "white" }}
           onClick={() =>
             dispatch({
-              type: "setSoundEnabled",
-              payload: state.isSoundEnabled ? false : true,
+              type: "toggleSound",
             })
           }
         >
@@ -106,6 +111,7 @@ function Header({ width, state, dispatch, getDifficultyMenu }) {
           <ShareIcon />
         </IconButton>
       </div>
+
       <Snackbar
         open={snackBar}
         autoHideDuration={3000}

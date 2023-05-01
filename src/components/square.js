@@ -72,7 +72,8 @@ function Square({
   };
 
   return (
-    <div
+    <td
+      key={id}
       style={{
         height: `${size}px`,
         width: `${size}px`,
@@ -88,7 +89,7 @@ function Square({
       onMouseLeave={handleMouseOut}
     >
       {isVisible ? renderValue() : isFlag ? renderFlag() : ""}
-    </div>
+    </td>
   );
 }
 

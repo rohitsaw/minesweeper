@@ -1,20 +1,18 @@
-import { useCallback, useReducer } from "react";
+import { useReducer } from "react";
 import Board from "../src/components/board";
+import Header from "../src/components/header";
 
-import { startGame } from "./components/modal";
 import reducerFn, { initStateFn } from "./utilFunctions/reducer";
 
 const App = () => {
+  console.log("APP RENDER");
   const [state, dispatch] = useReducer(reducerFn, "Hard", initStateFn);
 
-  const getDifficultyMenu = useCallback(() => {
-    startGame().then((result) => {
-      dispatch({ type: "setLevel", payload: result });
-    });
-  }, []);
-
   return (
-    <Board state={state} dispatch={dispatch} restartFn={getDifficultyMenu} />
+    <>
+      <Header state={state} dispatch={dispatch} />
+      <Board state={state} dispatch={dispatch} />;
+    </>
   );
 };
 

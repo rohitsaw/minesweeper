@@ -9,29 +9,32 @@ export function initStateFn(level) {
     noOfBombs: getNoOfBomb(level),
     board: getBoard(level),
     isGameOver: false,
+    currentClickCellId: -1,
   };
 }
 
 export default function reducer(state, action) {
   switch (action.type) {
-    case "setSoundEnabled":
+    case "toggleSound":
       return {
         ...state,
-        isSoundEnabled: action.payload,
+        isSoundEnabled: !state.isSoundEnabled,
       };
     case "setLevel":
-      return {
-        ...state,
-        level: action.payload,
-        noOfFlags: getNoOfFlag(action.payload),
-        noOfBombs: getNoOfBomb(action.payload),
-        board: getBoard(action.payload),
-        isGameOver: false,
-      };
+      return !state.isGameOver && action.payload === state.level
+        ? state
+        : {
+            ...state,
+            level: action.payload,
+            noOfFlags: getNoOfFlag(action.payload),
+            noOfBombs: getNoOfBomb(action.payload),
+            board: getBoard(action.payload),
+            isGameOver: false,
+          };
     case "setNoOfFlag":
       return {
         ...state,
-        noOfFlags: getNoOfFlag(state.level) - action.payload,
+        noOfFlags: state.noOfFlags + action.payload,
       };
     case "setBoard":
       return {
@@ -43,6 +46,11 @@ export default function reducer(state, action) {
         ...state,
         isGameOver: true,
         board: action.payload ?? state.board,
+      };
+    case "setCurrentClickCellId":
+      return {
+        ...state,
+        currentClickCellId: action.payload,
       };
     default:
       return state;
