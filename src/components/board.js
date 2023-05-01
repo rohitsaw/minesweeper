@@ -64,7 +64,7 @@ function Board({ state, dispatch }) {
                 val={each.val}
                 isVisible={each.isVisible}
                 isFlag={each.isFlag}
-                handleClick={handleClick}
+                handlLeftClick={handleClick}
                 handleRightClick={handleRightClick}
                 size={size}
                 isCurrentClickCellId={state.currentClickCellId === each.id}

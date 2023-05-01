@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getBackGroudColor } from "../utilFunctions/utils.js";
+import { getBackGroudColor, getColor } from "../utilFunctions/utils.js";
 
 function Square({
   id,
   val,
   isVisible,
-  handleClick,
+  handlLeftClick,
   handleRightClick,
   isFlag,
   size,
@@ -33,14 +33,16 @@ function Square({
         isCurrentClickCellId
       )
     );
-  }, [row, column, isVisible, val, isFlag, isCurrentClickCellId]);
+  }, [isVisible, isFlag]);
 
   const bomb = "0x1F4A3";
+  const isMobile = window.innerWidth < 720;
 
   const renderValue = () => {
     if (val === -1) return String.fromCodePoint(bomb);
     if (val === 0) return "";
-    return val;
+    const color = getColor(val);
+    return <span style={{ color: color, fontWeight: 700 }}>{val}</span>;
   };
 
   const renderFlag = () => {
@@ -48,10 +50,18 @@ function Square({
     return flag;
   };
 
-  const rightClick = (e, id) => {
+  const handleContextMenuClick = (e, id) => {
+    // if (isMobile) return handleMobileClick();
     e.preventDefault();
     handleRightClick(id);
   };
+
+  const handleClick = (e, id) => {
+    // if (isMobile) return handleMobileClick();
+    handlLeftClick(id);
+  };
+
+  const handleMobileClick = () => {};
 
   const handleMouseEnter = () => {
     if (isVisible) return;
@@ -83,8 +93,8 @@ function Square({
         justifyContent: "center",
         border: "0.5px solid black",
       }}
-      onClick={() => handleClick(id)}
-      onContextMenu={(e) => rightClick(e, id)}
+      onClick={(e) => handleClick(e, id)}
+      onContextMenu={(e) => handleContextMenuClick(e, id)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseOut}
     >

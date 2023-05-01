@@ -80,8 +80,8 @@ function Header({ state, dispatch }) {
             color: "white",
           }}
         >
-          <FlagIcon style={{ color: "#D80005", paddingRight: "10px" }} />
-          <span>{state.noOfFlags}</span>
+          <FlagIcon style={{ color: "#D80005", padding: '8px'}} />
+          <span style={{ fontSize: 22, padding:'8px' }}>{state.noOfFlags}</span>
         </div>
 
         <div style={{ flexGrow: 2 }}></div>

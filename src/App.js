@@ -8,11 +8,26 @@ const App = () => {
   console.log("APP RENDER");
   const [state, dispatch] = useReducer(reducerFn, "Hard", initStateFn);
 
+  const isMobile = window.innerWidth < 720;
+
   return (
-    <>
-      <Header state={state} dispatch={dispatch} />
-      <Board state={state} dispatch={dispatch} />;
-    </>
+    <div
+      style={{
+        height: window.innerHeight,
+        width: window.innerWidth,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: isMobile ? "white" : "#1a1e23",
+      }}
+    >
+      <div
+
+      >
+        <Header state={state} dispatch={dispatch} />
+        <Board state={state} dispatch={dispatch} />
+      </div>
+    </div>
   );
 };
 

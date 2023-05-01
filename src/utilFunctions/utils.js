@@ -83,3 +83,18 @@ export function getBackGroudColor(
     else return column % 2 !== 0 ? "#A6D948" : "#8DCB3A";
   }
 }
+
+export function getColor(val) {
+  switch (val) {
+    case 1:
+      return "#1876D1";
+    case 2:
+      return "#388E3C";
+    case 3:
+      return "#EA3306";
+    case 4:
+      return "#7B1EA2";
+    default:
+      return "#795548";
+  }
+}
