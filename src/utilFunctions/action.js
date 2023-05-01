@@ -9,7 +9,7 @@ export const restartGameFn = (dispatch) => {
   });
 };
 
-export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound) => {
+export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound, playGameWinSound) => {
   if (state.isGameOver) {
     getAlertBox(state.isGameWon, () => restartGameFn(dispatch));
     return;
@@ -17,12 +17,16 @@ export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound) => {
 
   const rows = getNoOfRows(state.level);
   const columns = getNoOfColumns(state.level);
+  const squares = rows * columns;
 
   const row = Math.floor(id / columns);
   const col = id % columns;
 
   if (state.board[row][col].isVisible) return;
   if (!state.board[row][col].isFlag && state.noOfFlags <= 0) return;
+
+  let found = 0;
+  let markedFlag = 0;
 
   let newBoard = new Array(rows);
   for (let i = 0; i < rows; i++) {
@@ -35,17 +39,32 @@ export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound) => {
             ? !state.board[i][j].isFlag
             : state.board[i][j].isFlag,
       });
+
+      if (newBoard[i][j].val !== -1 && newBoard[i][j].isVisible) {
+        found += 1;
+      } else if (newBoard[i][j].isFlag) {
+        markedFlag += 1;
+      }
     }
   }
 
-  dispatch({
-    type: "setBoard",
-    payload: {
-      board: newBoard,
-      noOfFlags: state.board[row][col].isFlag ? 1 : -1,
-    },
-  });
-  playPlaceFlagSound();
+  if (found === squares - state.noOfBombs && markedFlag === state.noOfBombs) {
+    dispatch({
+      type: "setGameOver",
+      payload: { board: showAllMines(newBoard), isGameWon: true },
+    });
+    playGameWinSound();
+    getAlertBox(true, () => restartGameFn(dispatch));
+  } else {
+    dispatch({
+      type: "setBoard",
+      payload: {
+        board: newBoard,
+        noOfFlags: state.board[row][col].isFlag ? 1 : -1,
+      },
+    });
+    playPlaceFlagSound();
+  }
 };
 
 export const handleClick = (

@@ -30,7 +30,13 @@ function Board({ state, dispatch }) {
   });
 
   const handleRightClick = (id) => {
-    placeFlagFunction(id, state, dispatch, playPlaceFlagSound);
+    placeFlagFunction(
+      id,
+      state,
+      dispatch,
+      playPlaceFlagSound,
+      playGameWinSound
+    );
   };
 
   const handleClick = (id) => {
