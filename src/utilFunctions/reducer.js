@@ -47,6 +47,9 @@ export default function reducer(state, action) {
         isGameOver: true,
         isGameWon: action.payload.isGameWon,
         board: action.payload.board ?? state.board,
+        noOfFlags:
+          state.noOfFlags +
+          (action.payload.noOfFlags ? action.payload.noOfFlags : 0),
       };
     case "setCurrentClickCellId":
       return {

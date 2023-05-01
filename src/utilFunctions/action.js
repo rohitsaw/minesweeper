@@ -9,7 +9,13 @@ export const restartGameFn = (dispatch) => {
   });
 };
 
-export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound, playGameWinSound) => {
+export const placeFlagFunction = (
+  id,
+  state,
+  dispatch,
+  playPlaceFlagSound,
+  playGameWinSound
+) => {
   if (state.isGameOver) {
     getAlertBox(state.isGameWon, () => restartGameFn(dispatch));
     return;
@@ -51,7 +57,11 @@ export const placeFlagFunction = (id, state, dispatch, playPlaceFlagSound, playG
   if (found === squares - state.noOfBombs && markedFlag === state.noOfBombs) {
     dispatch({
       type: "setGameOver",
-      payload: { board: showAllMines(newBoard), isGameWon: true },
+      payload: {
+        board: showAllMines(newBoard),
+        isGameWon: true,
+        noOfFlags: state.board[row][col].isFlag ? 1 : -1,
+      },
     });
     playGameWinSound();
     getAlertBox(true, () => restartGameFn(dispatch));
