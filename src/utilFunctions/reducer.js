@@ -56,6 +56,17 @@ export default function reducer(state, action) {
         ...state,
         currentClickCellId: action.payload,
       };
+    case "reloadState":
+      return {
+        isSoundEnabled: action.payload.isSoundEnabled,
+        level: action.payload.level,
+        noOfFlags: getNoOfFlag(action.payload.level),
+        noOfBombs: getNoOfBomb(action.payload.level),
+        board: getBoard(action.payload.level),
+        isGameOver: false,
+        isGameWon: false,
+        currentClickCellId: -1,
+      };
     default:
       return state;
   }

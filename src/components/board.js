@@ -1,5 +1,5 @@
+import { useMemo } from "react";
 import useSound from "use-sound";
-
 import Square from "./square";
 import { getNoOfColumns, getCellSize } from "../utilFunctions/utils.js";
 import {
@@ -13,8 +13,8 @@ import gameOver from "../assets/gameOver.wav";
 import placeFlagSound from "../assets/placeFlag.wav";
 
 function Board({ state, dispatch }) {
-  const columns = getNoOfColumns(state.level);
-  const size = getCellSize(state.level);
+  const columns = useMemo(() => getNoOfColumns(state.level), [state.level]);
+  const size = useMemo(() => getCellSize(state.level), [state.level]);
 
   const [playRightMoveSound] = useSound(rightSound, {
     soundEnabled: state.isSoundEnabled,

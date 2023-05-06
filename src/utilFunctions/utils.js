@@ -61,9 +61,9 @@ export function getNoOfColumns(level) {
 }
 
 export function getCellSize(level) {
-  if (level === "Hard") return 24;
   if (level === "Easy") return 54;
   if (level === "Medium") return 32;
+  if (level === "Hard") return 24;
 }
 
 export function getBackGroudColor(

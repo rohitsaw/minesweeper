@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import IconButton from "@mui/material/IconButton";
 import ShareIcon from "@mui/icons-material/Share";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -34,8 +34,11 @@ function Header({ state, dispatch }) {
     }
   };
 
-  const width =
-    (getCellSize(state.level) + 1 + 2) * getNoOfColumns(state.level) + 4;
+  const width = useMemo(
+    () => (getCellSize(state.level) + 1 + 2) * getNoOfColumns(state.level) + 4,
+    [state.level]
+  );
+
   const height = window.innerWidth < 720 ? "42px" : "56px";
 
   const action = (
@@ -80,8 +83,10 @@ function Header({ state, dispatch }) {
             color: "white",
           }}
         >
-          <FlagIcon style={{ color: "#D80005", padding: '8px'}} />
-          <span style={{ fontSize: 22, padding:'8px' }}>{state.noOfFlags}</span>
+          <FlagIcon style={{ color: "#D80005", padding: "8px" }} />
+          <span style={{ fontSize: 22, padding: "8px" }}>
+            {state.noOfFlags}
+          </span>
         </div>
 
         <div style={{ flexGrow: 2 }}></div>
