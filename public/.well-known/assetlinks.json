@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "developer.rohitsaw.minesweeper",
       "sha256_cert_fingerprints": [
-        "05:6C:6B:B5:A8:B0:4B:43:4A:2C:E1:36:8C:42:2E:4B:D9:10:FC:20:B1:7E:E0:09:3E:FC:D0:61:D8:A0:73:86"
+        "05:6C:6B:B5:A8:B0:4B:43:4A:2C:E1:36:8C:42:2E:4B:D9:10:FC:20:B1:7E:E0:09:3E:FC:D0:61:D8:A0:73:86",
+        "57:42:2B:25:41:2D:8B:51:0D:53:ED:3F:56:B4:CD:1D:FC:F7:F0:AF:E3:38:B6:D4:66:04:0B:74:31:64:BA:19"
       ]
     }
   }
