@@ -36,7 +36,6 @@ function Square({
   }, [isVisible, isFlag]);
 
   const bomb = "0x1F4A3";
-  const isMobile = window.innerWidth < 720;
 
   const renderValue = () => {
     if (val === -1) return String.fromCodePoint(bomb);
@@ -51,17 +50,13 @@ function Square({
   };
 
   const handleContextMenuClick = (e, id) => {
-    // if (isMobile) return handleMobileClick();
     e.preventDefault();
     handleRightClick(id);
   };
 
   const handleClick = (e, id) => {
-    // if (isMobile) return handleMobileClick();
     handlLeftClick(id);
   };
-
-  const handleMobileClick = () => {};
 
   const handleMouseEnter = () => {
     if (isVisible) return;

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import IconButton from "@mui/material/IconButton";
 import ShareIcon from "@mui/icons-material/Share";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -10,7 +10,11 @@ import Snackbar from "@mui/material/Snackbar";
 import { getCellSize, getNoOfColumns } from "../utilFunctions/utils";
 import { restartGameFn } from "../utilFunctions/action.js";
 
-function Header({ state, dispatch }) {
+import { StateContext } from "../App";
+
+function Header() {
+  const [state, dispatch] = useContext(StateContext);
+
   const [snackBar, setSnackBar] = useState(false);
 
   const handleClose = (event, reason) => {

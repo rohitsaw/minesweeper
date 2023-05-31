@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import useSound from "use-sound";
 import Square from "./square";
 import { getNoOfColumns, getCellSize } from "../utilFunctions/utils.js";
@@ -11,8 +11,11 @@ import rightSound from "../assets/right.wav";
 import gameWinSound from "../assets/gameWin.wav";
 import gameOver from "../assets/gameOver.wav";
 import placeFlagSound from "../assets/placeFlag.wav";
+import { StateContext } from "../App";
 
-function Board({ state, dispatch }) {
+function Board() {
+  const [state, dispatch] = useContext(StateContext);
+
   const columns = useMemo(() => getNoOfColumns(state.level), [state.level]);
   const size = useMemo(() => getCellSize(state.level), [state.level]);
 
