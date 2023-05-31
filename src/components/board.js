@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import useSound from "use-sound";
 import Square from "./square";
 import { getNoOfColumns, getCellSize } from "../utilFunctions/utils.js";

@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { getBackGroudColor, getColor } from "../utilFunctions/utils.js";
 

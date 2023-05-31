@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "developer.rohitsaw.minesweeper",
+      "sha256_cert_fingerprints": [
+        "05:6C:6B:B5:A8:B0:4B:43:4A:2C:E1:36:8C:42:2E:4B:D9:10:FC:20:B1:7E:E0:09:3E:FC:D0:61:D8:A0:73:86"
+      ]
+    }
+  }
+]

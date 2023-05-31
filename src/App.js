@@ -1,4 +1,4 @@
-import { useEffect, useReducer, createContext } from "react";
+import React, { useEffect, useReducer, createContext } from "react";
 import Board from "../src/components/board";
 import Header from "../src/components/header";
 
